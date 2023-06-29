@@ -42,8 +42,8 @@ class Server{
        this.app.use(this.authPath, require('../routes/auth'))
 
     }
-    async conectarDB(){
-        await dbConnection() //Esperar la respuesta del servidor        
+    async conectarbs(){
+        await dbConnection()
     }
 }
 

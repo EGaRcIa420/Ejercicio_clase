@@ -32,9 +32,11 @@ const login = async(req, res) => {
 
         if(resultado == true){
             const token = await generarJWT(usuarios)
+            res.cookie('token', token);
+
             return res.status(200).json({
                 //usuarios,
-                token: token
+                token
             })  
         }
         else{

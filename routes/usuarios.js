@@ -3,8 +3,9 @@ const {Router} = require('express')
 const route = Router() 
 
 const {usuarioGet, usuarioPost, usuarioPut, usuarioDelete} = require('../controllers/usuario')
+const {isAuthenticated} = require('../controllers/auth')
 
-route.get('/', usuarioGet)  
+route.get('/', isAuthenticated, usuarioGet)  
 
 route.post('/', usuarioPost)
 
