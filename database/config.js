@@ -1,12 +1,15 @@
 const mongoose = require('mongoose')
 
-const dbConnection = () => {
-    try {
+const dbConnection = async () => {
+    try{
         mongoose.connect(process.env.MONGO_CNN)
-        console.log('Connected to Mongo')
-    } catch (error) {
-        throw error('Error connecting to Mongo')
+        console.log('Conexión exitosa a la base de datos')
+    }
+    catch(error){
+        console.log(error)
+        //throw new Error('Error conectando a la base de datos')
     }
 }
 
-module.exports = {dbConnection}
+//Exportar la cadena de conexión
+module.exports = { dbConnection }

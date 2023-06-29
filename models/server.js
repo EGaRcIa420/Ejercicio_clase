@@ -1,11 +1,10 @@
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const express = require('express')
-const {dbConnection} = require('../database/config')
-const cors = require('cors')//Seguridad extra
-const bodyParser = require('body-parser')
+const { dbConnection } = require('../database/config')
+const cors  = require('cors');//Implementar seguridad
+const bodyParser = require('body-parser')//Recibir datos de formularios html
 
 class Server{
-
 
     constructor(){
         this.app = express()
@@ -17,8 +16,7 @@ class Server{
         this.authPath = '/api/auth'
         this.middlewares()
         this.routes()
-        this.conectarbs()
-
+        this.conectarDB() 
     }
 
     listen(){
@@ -28,23 +26,22 @@ class Server{
     }
 
     middlewares(){
-        this.app.use(cookieParser());
+        this.app.use(cookieParser()); 
         this.app.use(express.static(__dirname + "/public"));
-        this.app.use(cors())
-        this.app.use(bodyParser.json())
+        this.app.use( cors() );
+        this.app.use(bodyParser.json()) // for parsing application/json
     }
 
     routes() {
-       this.app.use(this.usuarioPath, require('../routes/usuarios'))
-       this.app.use(this.servicioPath, require('../routes/servicios'))
+        this.app.use(this.servicioPath, require('../routes/servicios'))
        this.app.use(this.paquetePath, require('../routes/paquetes'))
        this.app.use(this.citaPath, require('../routes/citas'))
+       this.app.use(this.usuarioPath, require('../routes/usuarios'))
        this.app.use(this.authPath, require('../routes/auth'))
-
-    }
-    async conectarbs(){
-        await dbConnection()
+     }
+     async conectarDB(){
+        await dbConnection() //Esperar la respuesta del servidor        
     }
 }
 
-module.exports = Server
+module.exports =  Server 
