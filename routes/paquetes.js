@@ -2,28 +2,14 @@ const {Routes, Router} = require('express')
 
 const route = Router()
 
-route.get ('/',(req,res)=> {
-    res.json({
-        msg:'API GET PAQUETES'
-    })
-})
+const {paqueteGet, paquetePost, paquetePut, paqueteDelete} = require('../controllers/paquete')
 
-route.post ('/', (req,res)=> {
-    res.json({
-        msg:'API POST PAQUETES'
-    })
-})
+route.get ('/', paqueteGet)
 
-route.put ('/', (req,res)=> {
-    res.json({
-        msg:'API PUT PAQUETES'
-    })
-})
+route.post ('/', paquetePost)
 
-route.delete ('/', (req,res)=> {
-    res.json({
-        msg:'API DELETE PAQUETES'
-    })
-})
+route.put ('/', paquetePut)
+
+route.delete ('/', paqueteDelete)
 
 module.exports = route

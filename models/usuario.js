@@ -1,30 +1,31 @@
-const {Schema, model} = require ('mongoose')
+const {Schema, model} = require('mongoose')
 
-const UsuarioSchema = Schema ({
-    nombre:{ 
-        unique: [true,'El nombre: {VALUE} ya existe'],
+const UsuarioSchema = Schema({
+    nombre: {
         type: String,
-        required: [true, 'El campo nombre es requerido']
+        unique: true,
+        required: [true, 'El nombre es obligatorio']
     },
 
     password: {
         type: String,
-        required: [true, 'El password es requerido'],
-        minlength: [3, 'Debe tener minimo 3 caracteres'],
-        maxlength: [7, 'Debe tener máximo 7 caracteres']
+        required: [true, 'El nombre es obligatorio'],
+        minlength: [3, 'Debe tener mínimo 3 caracteres'],
+        //maxlength:  [7, 'Debe tener máximo 3 caracteres']
     },
 
-    rol:{
+    rol: {
         type: String,
         required: true,
-        enum:['Admin', 'Empleado']
+        enum: ['Admin', 'Usuario']
     },
 
     estado: {
         type: Boolean,
-        required: [true,'El estado es obligatorio'],
-        default: true
-    }
+        default: true,
+        required: [true, 'El estado es obligatorio']
+    },
+
 })
 
-module.exports= model('Usuario', UsuarioSchema) //Exportar el modelo
+module.exports = model('Usuario',UsuarioSchema)

@@ -1,71 +1,86 @@
-const { response } = require('express')
+//Importar paquetes requeridos de Node
+const {response} = require('express')
+const bcrypt = require('bcrypt') //Encriptar
 
-//Importar modelos
+//Importación de los modelos
 const Usuario = require('../models/usuario')
 
+//Consultar
+const usuarioGet = async(req, res = response) =>{
+    const {nombre} = req.query //Desestructuración
 
-const usuarioGet = async (req, res = response) => {
-
+    //Consultar todos los usuarios
     const usuarios = await Usuario.find()
-
+    /*.find(query).toArray(function(err, result) {
+        if (err) throw err;
+        console.log(result);
+        db.close();
+      });
+*/
     res.json({
         usuarios
-    })
+    })   
 }
 
 //Registrar
-const usuarioPost = async (req, res = response) => {
-
-    const body = req.body //CAptura dde atributos
+const usuarioPost = async(req, res = response) => {
+    const body = req.body //Captura de atributos
     let mensaje = ''
+    //const {nombre, password, rol, estado} = req.query
     console.log(body)
     try {
-        const usuario = new Usuario(body)
-        usuario.save()
-        mensaje = "Exito en la insersion"
+        const usuario = new Usuario(body) //Instanciar el objeto   
+        //console.log(bcrypt.hashSync(body.password, 10))
+        const salt = 10
+        usuario.password = bcrypt.hashSync(body.password, salt)
+        mensaje = 'El registro se realizó exitosamente'
+        await usuario.save()
     } catch (error) {
-        if (error.name === 'ValidationError') {
-            console.log(Object.values(error.errors).map(val => val.message))
-            mensaje = Object.values(error.errors).map(val => val.message)
+        console.log(error)
+        if (error) {
+            if (error.name === 'ValidationError') {
+               console.error(Object.values(error.errors).map(val => val.message))
+                mensaje = Object.values(error.errors).map(val => val.message)
+            }
         }
+        console.log(mensaje)
     }
-    console.log(mensaje)
+}
+
+
+//Modificar
+const usuarioPut = async(req, res = response) => {
+
+    const {nombre, password, rol, estado} = req.body
+    let mensaje = ''
+
+    try{
+        const usuario = await Usuario.findOneAndUpdate({nombre: nombre},{password: bcrypt.hashSync(body.password, 10), rol:rol, estado:estado})
+        mensaje = 'La modificación se efectuó exitosamente'
+    }
+    catch(error){
+        mensaje = 'Se presentaron problemas en la modificación.'
+    }
+
     res.json({
         msg: mensaje
     })
 }
 
 //Modificar
-const usuarioPut = async (req, res = response) => {
-    const { nombre, password, rol, estado } = req.query//modificar
+const usuarioDelete = async(req, res = response) => {
 
-    let mensaje = ""
+    const {_id} = req.body
+    let mensaje = ''
 
-
-    try {
-        const usuario = await Usuario.findOneAndUpdate({ nombre: nombre }, { rol: rol, estado: estado })//Primera llave es el nombre del atributo, el segundo es el nuevo atributo
-        mensaje = "Modificado"
-    } catch (error) {
-        mensaje = "No modificado"
+    try{
+        const usuario = await Usuario.deleteOne({_id: _id})
+        mensaje = 'La eliminiación se efectuó exitosamente.'
     }
-    res.json({
-        msg: mensaje
-    })
-}
-
-//Eliminar
-const usuarioDelete = async (req, res = response) => {
-    const { nombre, password, rol, estado } = req.query//modificar
-
-    let mensaje = ""
-
-
-    try {
-        const usuario = await Usuario.findOneAndDelete({ nombre: nombre })//Primera llave es el nombre del atributo, el segundo es el nuevo atributo
-        mensaje = "Borrado"
-    } catch (error) {
-        mensaje = "No borrado"
+    catch(error){
+        mensaje = 'Se presentaron problemas en la eliminación.'
     }
+
     res.json({
         msg: mensaje
     })
